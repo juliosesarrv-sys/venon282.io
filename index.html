@@ -3,118 +3,123 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Galeria de Design</title>
+<title>Galeria Interativa com Parallax</title>
 
 <!-- Fonte e ícones -->
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
-  /* Reset e fontes */
-  * { margin:0; padding:0; box-sizing:border-box; font-family: 'Roboto', sans-serif; }
-  body {
-    background: url('https://i.ibb.co/4ZC1Z9x/fundo.png') no-repeat center center fixed;
-    background-size: cover;
-    color: #fff;
-  }
+* { margin:0; padding:0; box-sizing:border-box; font-family: 'Roboto', sans-serif; }
+body { height: 100vh; overflow-x: hidden; background: #111; color: #fff; position: relative; }
 
-  header {
-    text-align: center;
-    padding: 20px;
-    background: rgba(0,0,0,0.5);
-  }
+/* Fundo animado (partículas) */
+#background { position: fixed; top:0; left:0; width:100%; height:100%; z-index:-1; }
 
-  header h1 { font-size: 2.5rem; }
+/* Menu lateral */
+nav { position: fixed; left:0; top:0; width: 80px; height: 100%; background: rgba(0,0,0,0.8); display:flex; flex-direction: column; align-items:center; padding-top: 20px; }
+nav a { color: #fff; text-decoration:none; margin: 20px 0; font-size: 1.5rem; transition: color 0.3s; }
+nav a:hover { color: #ff6347; }
 
-  .social-icons {
-    margin-top: 10px;
-  }
+/* Conteúdo principal */
+main { margin-left: 80px; padding: 20px; }
 
-  .social-icons a {
-    color: #fff;
-    margin: 0 10px;
-    font-size: 1.5rem;
-    transition: 0.3s;
-  }
+/* Slide */
+.slide-container { position: relative; width: 100%; max-width: 900px; margin: 0 auto 50px; overflow: hidden; border-radius: 15px; perspective: 1000px; }
+.slides { display: flex; transition: transform 0.5s ease-in-out; }
+.slide {
+  min-width: 100%; height: 400px; display:flex; align-items:center; justify-content:center; border-radius: 15px;
+  font-size: 2rem; font-weight: bold; background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-size: 600% 600%; animation: gradientMove 5s ease infinite; transform: translateZ(0);
+}
 
-  .social-icons a:hover { color: #ff6347; }
+/* Gradiente animado */
+@keyframes gradientMove { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-  /* Galeria */
-  .gallery {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    padding: 20px;
-    gap: 15px;
-  }
+/* Títulos de seção com gradiente animado */
+h2 {
+  font-size: 3rem; font-weight: bold; background: linear-gradient(270deg, #ff6347, #1abc9c, #3498db);
+  background-size: 600% 600%; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  animation: gradientMove 5s ease infinite; margin-bottom: 20px; text-align: center; position: relative;
+}
 
-  .gallery-item {
-    width: 250px;
-    height: 250px;
-    overflow: hidden;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: transform 0.3s, box-shadow 0.3s;
-    background: #111;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .gallery-item img, .gallery-item video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .gallery-item:hover {
-    transform: scale(1.05);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.6);
-  }
-
-  /* iSlide */
-  .islide {
-    display: flex;
-    overflow-x: auto;
-    scroll-behavior: smooth;
-    padding-bottom: 20px;
-  }
-
-  .islide::-webkit-scrollbar { display: none; }
+/* Galeria com parallax */
+.gallery { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; }
+.gallery-item { width: 250px; height: 250px; overflow: hidden; border-radius: 10px; cursor: pointer; background: #111; display:flex; align-items:center; justify-content:center; transition: transform 0.3s, box-shadow 0.3s; }
+.gallery-item img, .gallery-item video { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+.gallery-item:hover img { transform: scale(1.1) rotate(2deg); filter: brightness(1.2) contrast(1.1); box-shadow: 0 10px 20px rgba(0,0,0,0.6); }
 </style>
 </head>
 <body>
 
-<header>
-  <h1>Galeria de Design</h1>
-  <div class="social-icons">
-    <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
-    <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
-    <a href="#" target="_blank"><i class="fab fa-facebook"></i></a>
-  </div>
-</header>
+<canvas id="background"></canvas>
 
-<section class="islide gallery">
-  <!-- Adicione suas imagens/GIFs aqui -->
-  <div class="gallery-item"><img src="https://i.ibb.co/1v8XkzR/design1.jpg" alt="Design 1"></div>
-  <div class="gallery-item"><img src="https://i.ibb.co/xjrgF0k/design2.gif" alt="GIF Animado"></div>
-  <div class="gallery-item"><img src="https://i.ibb.co/0Z4P7Bv/design3.jpg" alt="Design 3"></div>
-  <div class="gallery-item"><img src="https://i.ibb.co/TL7zFfL/design4.gif" alt="GIF Animado"></div>
-  <div class="gallery-item"><img src="https://i.ibb.co/fSf2Y6c/design5.jpg" alt="Design 5"></div>
-</section>
+<nav>
+  <a href="#pcback" title="PCBack"><i class="fas fa-desktop"></i></a>
+  <a href="#fundos" title="Fundos"><i class="fas fa-image"></i></a>
+  <a href="#perfil" title="Perfil"><i class="fas fa-user"></i></a>
+</nav>
+
+<main>
+  <div class="slide-container">
+    <div class="slides" id="slides">
+      <div class="slide" style="background: linear-gradient(270deg, #ff6347, #1abc9c, #3498db);">PCBack</div>
+      <div class="slide" style="background: linear-gradient(270deg, #9b59b6, #e74c3c, #f1c40f);">Fundos</div>
+      <div class="slide" style="background: linear-gradient(270deg, #3498db, #1abc9c, #ff6347);">Perfil</div>
+    </div>
+  </div>
+
+  <section id="pcback"><h2>PCBack</h2>
+    <div class="gallery">
+      <div class="gallery-item"><img src="https://i.ibb.co/1v8XkzR/design1.jpg" alt="PCBack 1"></div>
+      <div class="gallery-item"><img src="https://i.ibb.co/xjrgF0k/design2.gif" alt="PCBack GIF"></div>
+    </div>
+  </section>
+
+  <section id="fundos"><h2>Fundos</h2>
+    <div class="gallery">
+      <div class="gallery-item"><img src="https://i.ibb.co/0Z4P7Bv/design3.jpg" alt="Fundo 1"></div>
+      <div class="gallery-item"><img src="https://i.ibb.co/TL7zFfL/design4.gif" alt="Fundo GIF"></div>
+    </div>
+  </section>
+
+  <section id="perfil"><h2>Perfil</h2>
+    <div class="gallery">
+      <div class="gallery-item"><img src="https://i.ibb.co/fSf2Y6c/design5.jpg" alt="Perfil 1"></div>
+      <div class="gallery-item"><img src="https://i.ibb.co/xjrgF0k/design2.gif" alt="Perfil GIF"></div>
+    </div>
+  </section>
+</main>
 
 <script>
-  // iSlide automático
-  const islide = document.querySelector('.islide');
-  let scrollAmount = 0;
-  function autoSlide() {
-    scrollAmount += 1;
-    if(scrollAmount >= islide.scrollWidth - islide.clientWidth){
-      scrollAmount = 0;
-    }
-    islide.scrollTo({left: scrollAmount, behavior: 'smooth'});
-  }
-  setInterval(autoSlide, 30);
+// Slide automático
+const slides = document.getElementById('slides');
+let index = 0;
+const total = slides.children.length;
+setInterval(() => { index = (index+1) % total; slides.style.transform = `translateX(-${index*100}%)`; }, 4000);
+
+// Fundo animado (partículas)
+const canvas = document.getElementById('background');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+let particles = [];
+for(let i=0;i<100;i++){ particles.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, r: Math.random()*2+1, dx: Math.random()*1-0.5, dy: Math.random()*1-0.5}); }
+function animate(){ ctx.clearRect(0,0,canvas.width,canvas.height); particles.forEach(p=>{ ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fillStyle = '#fff'; ctx.fill(); p.x+=p.dx; p.y+=p.dy; if(p.x<0||p.x>canvas.width)p.dx*=-1; if(p.y<0||p.y>canvas.height)p.dy*=-1; }); requestAnimationFrame(animate); }
+animate();
+window.addEventListener('resize',()=>{ canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+
+// Parallax simples
+window.addEventListener('scroll', () => {
+  const scrollTop = window.pageYOffset;
+  const slidesArr = document.querySelectorAll('.slide');
+  slidesArr.forEach((slide, i) => {
+    slide.style.transform = `translateX(-${index*100}%) translateY(${scrollTop * 0.1}px)`;
+  });
+  const galleryItems = document.querySelectorAll('.gallery-item img');
+  galleryItems.forEach(img => {
+    img.style.transform = `translateY(${scrollTop * 0.05}px)`;
+  });
+});
 </script>
 
 </body>
