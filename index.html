@@ -3,18 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Galeria Interativa Responsiva com Parallax</title>
+<title>Perfil Interativo com Imagem de Fundo</title>
 
-<!-- Fonte e ícones -->
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
 * { margin:0; padding:0; box-sizing:border-box; font-family: 'Roboto', sans-serif; }
-body { min-height: 100vh; overflow-x: hidden; background: #111; color: #fff; position: relative; }
+body {
+  min-height: 100vh;
+  overflow-x: hidden;
+  color: #fff;
+  position: relative;
+  background: url('https://images.unsplash.com/photo-1605460375648-278bcbd579a6?auto=format&fit=crop&w=1950&q=80') no-repeat center center fixed;
+  background-size: cover;
+}
 
-/* Fundo animado (partículas) */
-#background { position: fixed; top:0; left:0; width:100%; height:100%; z-index:-1; }
+/* Adicionando uma sobreposição escura para contraste */
+body::before {
+  content: '';
+  position: fixed;
+  top:0; left:0; width:100%; height:100%;
+  background: rgba(0,0,0,0.6);
+  z-index: -1;
+}
 
 /* Menu lateral */
 nav { position: fixed; left:0; top:0; width: 80px; height: 100%; background: rgba(0,0,0,0.8); display:flex; flex-direction: column; align-items:center; padding-top: 20px; }
@@ -24,11 +36,38 @@ nav a:hover { color: #ff6347; }
 /* Conteúdo principal */
 main { margin-left: 80px; padding: 20px; }
 
+/* Perfil inicial */
+.profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 50px;
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeInUp 1s forwards;
+}
+.profile img {
+  width: 150px; height: 150px; border-radius: 50%; object-fit: cover; margin-bottom: 20px; border: 3px solid #ff6347;
+  opacity: 0; transform: scale(0.8);
+  animation: scaleIn 0.8s forwards 0.3s;
+}
+.profile h1 {
+  font-size: 2.5rem; margin-bottom: 10px;
+  opacity: 0; transform: translateY(20px);
+  animation: fadeInUp 0.8s forwards 0.5s;
+}
+.profile p {
+  font-size: 1.2rem; max-width: 600px; line-height: 1.6;
+  opacity: 0; transform: translateY(20px);
+  animation: fadeInUp 0.8s forwards 0.7s;
+}
+
 /* Slide */
 .slide-container { position: relative; width: 100%; max-width: 900px; margin: 0 auto 50px; overflow: hidden; border-radius: 15px; perspective: 1000px; }
 .slides { display: flex; transition: transform 0.5s ease-in-out; }
 .slide {
-  min-width: 100%; height: 400px; display:flex; align-items:center; justify-content:center; border-radius: 15px;
+  min-width: 100%; height: 300px; display:flex; align-items:center; justify-content:center; border-radius: 15px;
   font-size: 2rem; font-weight: bold; background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   background-size: 600% 600%; animation: gradientMove 5s ease infinite;
 }
@@ -36,37 +75,22 @@ main { margin-left: 80px; padding: 20px; }
 /* Gradiente animado */
 @keyframes gradientMove { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-/* Títulos de seção com gradiente animado */
-h2 {
-  font-size: 3rem; font-weight: bold; background: linear-gradient(270deg, #ff6347, #1abc9c, #3498db);
-  background-size: 600% 600%; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  animation: gradientMove 5s ease infinite; margin-bottom: 20px; text-align: center; position: relative;
-}
-
 /* Galeria responsiva */
 .gallery {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsivo */
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 15px;
   justify-items: center;
   margin-bottom: 50px;
 }
 .gallery-item {
-  width: 100%;
-  height: 250px;
-  overflow: hidden;
-  border-radius: 10px;
-  cursor: pointer;
-  background: #111;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.3s, box-shadow 0.3s;
+  width: 100%; height: 250px; overflow: hidden; border-radius: 10px; cursor: pointer;
+  background: #111; display: flex; align-items: center; justify-content: center;
+  transition: transform 0.3s, box-shadow 0.3s, opacity 0.5s, transform 0.5s;
+  opacity: 0; transform: translateY(20px);
 }
 .gallery-item img, .gallery-item video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  width: 100%; height: 100%; object-fit: cover;
   transition: transform 0.5s ease, filter 0.5s ease, box-shadow 0.5s ease;
 }
 .gallery-item:hover img {
@@ -74,45 +98,49 @@ h2 {
   filter: brightness(1.2) contrast(1.1);
   box-shadow: 0 10px 20px rgba(0,0,0,0.6);
 }
+
+/* Animações */
+@keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+@keyframes scaleIn { to { opacity: 1; transform: scale(1); } }
 </style>
 </head>
 <body>
 
-<canvas id="background"></canvas>
-
 <nav>
-  <a href="#pcback" title="PCBack"><i class="fas fa-desktop"></i></a>
-  <a href="#fundos" title="Fundos"><i class="fas fa-image"></i></a>
-  <a href="#perfil" title="Perfil"><i class="fas fa-user"></i></a>
+  <a href="#home" title="Perfil"><i class="fas fa-user"></i></a>
+  <a href="#design" title="Design"><i class="fas fa-paint-brush"></i></a>
 </nav>
 
 <main>
+  <!-- Seção Inicial (Perfil) -->
+  <section id="home" class="profile">
+    <img src="https://i.ibb.co/fSf2Y6c/design5.jpg" alt="Meu Perfil">
+    <h1>Olá, eu sou [Seu Nome]</h1>
+    <p>
+      Sou criador digital apaixonado por design, animação e experiências visuais interativas.
+      Aqui você encontrará meus trabalhos e projetos, que refletem meu estilo e criatividade.
+      Explore a seção "Design" para conferir minhas galerias!
+    </p>
+  </section>
+
+  <!-- Slide -->
   <div class="slide-container">
     <div class="slides" id="slides">
-      <div class="slide" style="background: linear-gradient(270deg, #ff6347, #1abc9c, #3498db);">PCBack</div>
-      <div class="slide" style="background: linear-gradient(270deg, #9b59b6, #e74c3c, #f1c40f);">Fundos</div>
-      <div class="slide" style="background: linear-gradient(270deg, #3498db, #1abc9c, #ff6347);">Perfil</div>
+      <div class="slide" style="background: linear-gradient(270deg, #ff6347, #1abc9c, #3498db);">Bem-vindo!</div>
+      <div class="slide" style="background: linear-gradient(270deg, #9b59b6, #e74c3c, #f1c40f);">Confira meus projetos</div>
+      <div class="slide" style="background: linear-gradient(270deg, #3498db, #1abc9c, #ff6347);">Explore a galeria</div>
     </div>
   </div>
 
-  <section id="pcback"><h2>PCBack</h2>
-    <div class="gallery">
-      <div class="gallery-item"><img src="https://i.ibb.co/1v8XkzR/design1.jpg" alt="PCBack 1"></div>
-      <div class="gallery-item"><img src="https://i.ibb.co/xjrgF0k/design2.gif" alt="PCBack GIF"></div>
-    </div>
-  </section>
-
-  <section id="fundos"><h2>Fundos</h2>
-    <div class="gallery">
-      <div class="gallery-item"><img src="https://i.ibb.co/0Z4P7Bv/design3.jpg" alt="Fundo 1"></div>
-      <div class="gallery-item"><img src="https://i.ibb.co/TL7zFfL/design4.gif" alt="Fundo GIF"></div>
-    </div>
-  </section>
-
-  <section id="perfil"><h2>Perfil</h2>
-    <div class="gallery">
-      <div class="gallery-item"><img src="https://i.ibb.co/fSf2Y6c/design5.jpg" alt="Perfil 1"></div>
-      <div class="gallery-item"><img src="https://i.ibb.co/xjrgF0kz/design2.gif" alt="Perfil GIF"></div>
+  <!-- Seção Design (Galeria) -->
+  <section id="design">
+    <h2>Design</h2>
+    <div class="gallery" id="gallery">
+      <div class="gallery-item"><img src="https://i.ibb.co/1v8XkzR/design1.jpg" alt="Design 1"></div>
+      <div class="gallery-item"><img src="https://i.ibb.co/xjrgF0kz/design2.gif" alt="Design 2"></div>
+      <div class="gallery-item"><img src="https://i.ibb.co/0Z4P7Bv/design3.jpg" alt="Design 3"></div>
+      <div class="gallery-item"><img src="https://i.ibb.co/TL7zFfL/design4.gif" alt="Design 4"></div>
+      <div class="gallery-item"><img src="https://i.ibb.co/fSf2Y6c/design5.jpg" alt="Design 5"></div>
     </div>
   </section>
 </main>
@@ -127,54 +155,15 @@ setInterval(() => {
   slides.style.transform = `translateX(-${index * 100}%)`;
 }, 4000);
 
-// Fundo animado (partículas)
-const canvas = document.getElementById('background');
-const ctx = canvas.getContext('2d');
-
-function resizeCanvas() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-}
-window.addEventListener('resize', resizeCanvas);
-resizeCanvas();
-
-let particles = [];
-for (let i = 0; i < 100; i++) {
-  particles.push({
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height,
-    r: Math.random() * 2 + 1,
-    dx: Math.random() - 0.5,
-    dy: Math.random() - 0.5
-  });
-}
-
-function animateParticles() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  particles.forEach(p => {
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-    ctx.fillStyle = '#fff';
-    ctx.fill();
-    p.x += p.dx;
-    p.y += p.dy;
-    if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
-    if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
-  });
-  requestAnimationFrame(animateParticles);
-}
-animateParticles();
-
-// Parallax simples
-window.addEventListener('scroll', () => {
-  const scrollTop = window.pageYOffset;
-  const slidesArr = document.querySelectorAll('.slide');
-  slidesArr.forEach(slide => {
-    slide.style.transform = `translateX(-${index * 100}%) translateY(${scrollTop * 0.1}px)`;
-  });
-  const galleryItems = document.querySelectorAll('.gallery-item img');
-  galleryItems.forEach(img => {
-    img.style.transform = `translateY(${scrollTop * 0.05}px)`;
+// Fade-in da galeria ao rolar
+window.addEventListener('scroll',()=>{
+  const galleryItems = document.querySelectorAll('.gallery-item');
+  galleryItems.forEach((item)=>{
+    const rect = item.getBoundingClientRect();
+    if(rect.top < window.innerHeight - 50){
+      item.style.opacity = '1';
+      item.style.transform = 'translateY(0)';
+    }
   });
 });
 </script>
